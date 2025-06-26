@@ -1,29 +1,36 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const cameraStream = document.getElementById('camera-stream');
-    const captureButton = document.getElementById('capture-button');
-    const capturedImage = document.getElementById('captured-image');
-    const photo = document.getElementById('photo');
-    const context = capturedImage.getContext('2d');
+const video = document.getElementById('camera-stream');
+const canvas = document.getElementById('captured-image');
+const photo = document.getElementById('photo');
+const captureButton = document.getElementById('capture-button');
+const gallery = document.getElementById('gallery');
 
-    // Access the camera
-    async function startCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-            cameraStream.srcObject = stream;
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-            alert('Unable to access the camera. Please check your browser permissions.');
-        }
-    }
-
-    // Capture photo
-    captureButton.addEventListener('click', function() {
-        context.drawImage(cameraStream, 0, 0, 640, 480);
-        const imageDataURL = capturedImage.toDataURL('image/png');
-        photo.src = imageDataURL;
-        photo.style.display = 'block'; // Show the photo
+// Start camera
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        alert('Could not access the camera.');
     });
 
-    // Start the camera when the page loads
-    startCamera();
+// Capture photo
+captureButton.addEventListener('click', () => {
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/png');
+    photo.src = dataUrl;
+    photo.style.display = 'block';
+
+    // Add to gallery
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.alt = 'Captured Photo';
+    img.style.animationDelay = `${gallery.children.length * 0.1}s`;
+    gallery.appendChild(img);
+
+    // Optional: click to view larger
+    img.addEventListener('click', () => {
+        photo.src = img.src;
+        photo.style.display = 'block';
+        photo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
 });
