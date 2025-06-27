@@ -12,7 +12,9 @@ body {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 0;
-    background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+        background: url('https://www.shutterstock.com/image-photo/black-backgroundempty-dark-blue-studio-600nw-2167771973.jpg') center center / cover no-repeat;
+  
+    /* background: linear-gradient(120deg, #667eea 0%, #764ba2 100%); */
     overflow: hidden;
     animation: gradientMove 10s ease-in-out infinite alternate;
 }
